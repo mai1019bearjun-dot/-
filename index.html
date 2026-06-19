@@ -11,8 +11,6 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;font-weight:300;line-height:1.6;min-height:100vh;overflow-x:hidden;font-size:20.8px}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
-
-/* ── LOCK SCREEN ── */
 #lockscreen{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column}
 .lock-box{width:340px;text-align:center}
 .lock-logo{font-family:'Noto Serif TC',serif;font-weight:900;font-size:22px;letter-spacing:.15em;color:var(--accent);margin-bottom:6px}
@@ -26,8 +24,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .lock-err{font-size:12px;color:var(--red);margin-top:10px;height:18px;letter-spacing:.05em;opacity:0;transition:opacity .2s}
 .lock-err.show{opacity:1}
 .lock-divider{width:40px;height:1px;background:var(--gold);margin:0 auto 32px;opacity:.4}
-
-/* ── APP ── */
 .app{display:flex;min-height:100vh}
 .sidebar{width:240px;min-height:100vh;background:var(--bg-1);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
 .sb-logo{padding:32px 24px 22px;border-bottom:1px solid var(--border)}
@@ -100,7 +96,9 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .gbb{height:2px;background:var(--bg-3);overflow:hidden}
 .gbf{height:100%;background:linear-gradient(90deg,var(--blue),#7bc4f7);transition:width .6s ease}
 .gm{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:var(--text-3);letter-spacing:.04em}
-.ovg{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:30px}
+
+/* 圓餅圖區塊 */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:30px}
 .ovc{border:1px solid var(--border);padding:20px;background:var(--bg-1)}
 .ovct{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-3);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .ovct::after{content:'';flex:1;height:1px;background:var(--border)}
@@ -110,6 +108,17 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .ovv{font-family:'Share Tech Mono',monospace;font-size:14px}
 .cw{border:1px solid var(--border);padding:20px;background:var(--bg-1);margin-bottom:30px}
 .ct{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--text-3);margin-bottom:16px}
+.pie-wrap{position:relative;width:100%;display:flex;justify-content:center;align-items:center}
+.pie-wrap canvas{max-width:280px;max-height:280px}
+
+/* 圖例 */
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:16px;justify-content:center}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-2)}
+.legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* 歷史圖表 */
+.hist-charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:30px}
+
 .ht{width:100%;border-collapse:collapse}
 .ht th{text-align:left;padding:11px 12px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-3);border-bottom:1px solid var(--border-s);font-weight:400}
 .ht td{padding:13px 12px;font-size:14px;border-bottom:1px solid var(--border);color:var(--text-2)}
@@ -121,7 +130,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 </head>
 <body>
 
-<!-- 密碼鎖畫面 -->
 <div id="lockscreen">
   <div class="lock-box">
     <div class="lock-logo">財務管理系統</div>
@@ -162,6 +170,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
   </div>
 </aside>
+
 <main class="main">
   <div class="topbar">
     <div>
@@ -173,6 +182,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
   </div>
   <div class="content">
+
     <!-- 個人財務 -->
     <div id="panel-personal" class="panel active">
       <div class="kpi-grid">
@@ -195,6 +205,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
         <div class="trow"><span class="tlbl">支出合計</span><span class="tv neg" id="petb">$0</span><span class="tv neg" id="peta">$0</span><span></span></div>
       </div>
     </div>
+
     <!-- 工作室財務 -->
     <div id="panel-studio" class="panel">
       <div class="kpi-grid">
@@ -217,6 +228,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
         <div class="trow"><span class="tlbl">支出合計</span><span class="tv neg" id="setb">$0</span><span class="tv neg" id="seta">$0</span><span></span></div>
       </div>
     </div>
+
     <!-- 存款管理 -->
     <div id="panel-savings" class="panel">
       <div class="kpi-grid">
@@ -241,6 +253,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
         </div>
       </div>
     </div>
+
     <!-- 總資產 -->
     <div id="panel-total" class="panel">
       <div class="kpi-grid">
@@ -251,7 +264,9 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
         <div class="kc" style="background:linear-gradient(135deg,#131313,#1b1b1b)"><div class="kl">累計總資產</div><div class="kv gold" id="t-c">$0</div><div class="ks">歷史累計</div></div>
         <div class="kc"><div class="kl">累計存款</div><div class="kv sav" id="t-sc">$0</div></div>
       </div>
-      <div class="ovg">
+
+      <div class="chart-row">
+        <!-- 收支總覽文字 -->
         <div class="ovc">
           <div class="ovct">本月收支總覽</div>
           <div class="ovr"><span class="ovk">個人收入</span><span class="ovv" style="color:var(--green)" id="ov-pi">$0</span></div>
@@ -261,14 +276,44 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
           <div class="ovr"><span class="ovk">存款存入</span><span class="ovv" style="color:var(--blue)" id="ov-svi">$0</span></div>
           <div class="ovr"><span class="ovk">存款提領</span><span class="ovv" style="color:var(--red)" id="ov-svo">$0</span></div>
         </div>
+        <!-- 支出圓餅圖 -->
         <div class="cw" style="margin-bottom:0">
-          <div class="ct">本月收支分配</div>
-          <canvas id="chartA" height="210"></canvas>
+          <div class="ct">支出比例分配</div>
+          <div class="pie-wrap"><canvas id="chartA"></canvas></div>
+          <div class="legend" id="legendA"></div>
+        </div>
+      </div>
+
+      <!-- 收入圓餅圖 -->
+      <div class="chart-row">
+        <div class="cw" style="margin-bottom:0">
+          <div class="ct">收入來源分配</div>
+          <div class="pie-wrap"><canvas id="chartIncome"></canvas></div>
+          <div class="legend" id="legendIncome"></div>
+        </div>
+        <div class="cw" style="margin-bottom:0">
+          <div class="ct">收支結構總覽</div>
+          <div class="pie-wrap"><canvas id="chartOverall"></canvas></div>
+          <div class="legend" id="legendOverall"></div>
         </div>
       </div>
     </div>
+
     <!-- 歷史記錄 -->
     <div id="panel-history" class="panel">
+      <!-- 歷史圓餅圖 & 折線圖 -->
+      <div class="hist-charts">
+        <div class="cw" style="margin-bottom:0">
+          <div class="ct">累計資產走勢</div>
+          <canvas id="chartH" height="220"></canvas>
+        </div>
+        <div class="cw" style="margin-bottom:0">
+          <div class="ct">各月支出比例</div>
+          <div class="pie-wrap"><canvas id="chartHPie"></canvas></div>
+          <div class="legend" id="legendHPie"></div>
+        </div>
+      </div>
+
       <div class="tsec">
         <div class="sh"><div class="shg"><span class="al"></span>每月紀錄</div></div>
         <div style="overflow-x:auto">
@@ -282,18 +327,14 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
         </table>
         </div>
       </div>
-      <div class="cw">
-        <div class="ct">資產走勢</div>
-        <canvas id="chartH" height="200"></canvas>
-      </div>
     </div>
+
   </div>
 </main>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-// 密碼驗證
 function unlock(){
   const pw=document.getElementById('pwInput').value;
   const err=document.getElementById('lockErr');
@@ -308,20 +349,23 @@ function unlock(){
     setTimeout(()=>err.classList.remove('show'),2500);
   }
 }
-document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('pwInput').focus();
-});
+document.addEventListener('DOMContentLoaded',()=>{ document.getElementById('pwInput').focus(); });
 
 Chart.defaults.color='#555';Chart.defaults.borderColor='rgba(255,255,255,0.05)';Chart.defaults.font.family="'Share Tech Mono',monospace";
+
+const PIE_COLORS=['#4dbe8e','#e05a5a','#5a9ae0','#c9a84c','#e08e5a','#a05ae0','#5ae0d4','#e05aa0','#7bc4f7','#f7c47b'];
+
 const MO=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 const now=new Date();let cY=now.getFullYear(),cM=now.getMonth();
 const DR={'p-income':[{name:'薪資',budget:0,actual:0},{name:'兼職收入',budget:0,actual:0}],'p-expense':[{name:'房租',budget:0,actual:0},{name:'餐飲',budget:0,actual:0},{name:'交通',budget:0,actual:0}],'s-income':[{name:'專案收入',budget:0,actual:0},{name:'接案費用',budget:0,actual:0}],'s-expense':[{name:'場地租金',budget:0,actual:0},{name:'設備採購',budget:0,actual:0}],'savings':[{name:'活期存款',budget:0,actual:0},{name:'定期存款',budget:0,actual:0}]};
 let goals=[{name:'緊急備用金',target:100000,saved:0},{name:'旅遊基金',target:50000,saved:0}];
 let data={'2026-06':{'p-income':[{name:'薪資',budget:0,actual:41645},{name:'兼職收入',budget:0,actual:3569}],'p-expense':[{name:'房租',budget:0,actual:5000},{name:'水電',budget:0,actual:1240},{name:'貸款',budget:0,actual:8558},{name:'手機費',budget:0,actual:5333},{name:'信用卡',budget:0,actual:1426},{name:'罰單',budget:0,actual:1000},{name:'月費',budget:0,actual:1000},{name:'存款',budget:0,actual:7330}],'s-income':[{name:'專案收入',budget:0,actual:0},{name:'接案費用',budget:0,actual:0}],'s-expense':[{name:'場地租金',budget:0,actual:0},{name:'設備採購',budget:0,actual:0}],'savings':[{name:'活期存款',budget:7330,actual:0},{name:'定期存款',budget:0,actual:0}]}};
+
 function key(y,m){return`${y}-${String(m+1).padStart(2,'0')}`}
 function gD(y,m){const k=key(y,m);if(!data[k])data[k]=JSON.parse(JSON.stringify(DR));return data[k]}
 function fmt(n){return'$'+Math.round(n).toLocaleString()}
 function ss(s,f){return gD(cY,cM)[s].reduce((a,r)=>a+(r[f]||0),0)}
+
 function rR(sId){
   const rows=gD(cY,cM)[sId];const el=document.getElementById(sId+'-rows');if(!el)return;
   const isSv=sId==='savings';el.innerHTML='';
@@ -332,6 +376,7 @@ function rR(sId){
   });
   if(isSv)rGoals();recalc();
 }
+
 function rGoals(){
   const el=document.getElementById('goal-rows');if(!el)return;
   el.innerHTML=goals.map((g,i)=>{const p=g.target>0?Math.min(100,Math.round(g.saved/g.target*100)):0;return`<div class="gc"><div class="gt"><span class="gn">${g.name}</span><div style="display:flex;gap:10px;align-items:center"><span class="ga">${fmt(g.saved)} / ${fmt(g.target)}</span><button class="rd" onclick="dGoal(${i})">✕</button></div></div><div class="gbb"><div class="gbf" style="width:${p}%"></div></div><div class="gm"><span>${p}% 完成</span><span>還差 ${fmt(Math.max(0,g.target-g.saved))}</span></div></div>`;}).join('');
@@ -343,7 +388,25 @@ function addR(s,iId){const inp=document.getElementById(iId);const n=inp.value.tr
 function dR(s,i){gD(cY,cM)[s].splice(i,1);rR(s);}
 function sv(id,v){const e=document.getElementById(id);if(e)e.textContent=fmt(v);}
 function scls(id,v){const e=document.getElementById(id);if(!e)return;e.textContent=fmt(v);e.className='kv '+(v>=0?'pos':'neg');}
-let cA=null,cH=null;
+
+let charts={};
+
+function makePie(id,legendId,labels,values,colors){
+  const ctx=document.getElementById(id);if(!ctx)return;
+  if(charts[id])charts[id].destroy();
+  const filtered=labels.map((l,i)=>({l,v:values[i],c:colors[i%colors.length]})).filter(x=>x.v>0);
+  if(!filtered.length)return;
+  charts[id]=new Chart(ctx,{
+    type:'doughnut',
+    data:{labels:filtered.map(x=>x.l),datasets:[{data:filtered.map(x=>x.v),backgroundColor:filtered.map(x=>x.c+'cc'),borderColor:filtered.map(x=>x.c),borderWidth:1.5,hoverOffset:6}]},
+    options:{responsive:true,maintainAspectRatio:true,cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const total=ctx.dataset.data.reduce((a,b)=>a+b,0);const pct=Math.round(ctx.parsed/total*100);return` ${ctx.label}: ${fmt(ctx.parsed)} (${pct}%)`;}}}}},
+  });
+  if(legendId){
+    const lel=document.getElementById(legendId);if(!lel)return;
+    lel.innerHTML=filtered.map(x=>`<div class="legend-item"><div class="legend-dot" style="background:${x.c}"></div>${x.l}</div>`).join('');
+  }
+}
+
 function recalc(){
   const pI=ss('p-income','actual'),pE=ss('p-expense','actual');
   const sI=ss('s-income','actual'),sE=ss('s-expense','actual');
@@ -356,19 +419,51 @@ function recalc(){
   sv('sv-i',svIn);sv('sv-o',svOut);sv('sv-n',svN);sv('sv-c',svC);
   sv('t-sv',svN);sv('t-c',cum);sv('t-sc',svC);
   sv('ov-pi',pI);sv('ov-pe',pE);sv('ov-si',sI);sv('ov-se',sE);sv('ov-svi',svIn);sv('ov-svo',svOut);
-  updA(pI,pE,sI,sE,svIn,svOut);updHist();
+
+  // 支出圓餅
+  const expRows=gD(cY,cM)['p-expense'];
+  makePie('chartA','legendA',expRows.map(r=>r.name),expRows.map(r=>r.actual),PIE_COLORS);
+
+  // 收入圓餅
+  const incRows=gD(cY,cM)['p-income'];
+  makePie('chartIncome','legendIncome',incRows.map(r=>r.name),incRows.map(r=>r.actual),['#4dbe8e','#7bc4f7','#c9a84c','#5ae0d4']);
+
+  // 收支結構
+  makePie('chartOverall','legendOverall',
+    ['個人收入','個人支出','工作室收入','工作室支出','存款存入'],
+    [pI,pE,sI,sE,svIn],
+    ['#4dbe8e','#e05a5a','#5a9ae0','#e08e5a','#7bc4f7']);
+
+  updHist();
 }
+
 function calcCum(){let t=0;const ck=key(cY,cM);for(const k of Object.keys(data).sort()){const d=data[k];t+=(d['p-income'].reduce((a,r)=>a+r.actual,0)-d['p-expense'].reduce((a,r)=>a+r.actual,0))+(d['s-income'].reduce((a,r)=>a+r.actual,0)-d['s-expense'].reduce((a,r)=>a+r.actual,0))+d['savings'].reduce((a,r)=>a+(r.budget-r.actual),0);if(k===ck)break;}return t;}
 function calcSvC(){let t=0;const ck=key(cY,cM);for(const k of Object.keys(data).sort()){t+=data[k]['savings'].reduce((a,r)=>a+(r.budget-r.actual),0);if(k===ck)break;}return t;}
-function updA(pI,pE,sI,sE,svIn,svOut){const ctx=document.getElementById('chartA');if(!ctx)return;if(cA)cA.destroy();cA=new Chart(ctx,{type:'bar',data:{labels:['個人收入','個人支出','工作室收入','工作室支出','存款存入','存款提領'],datasets:[{data:[pI,pE,sI,sE,svIn,svOut],backgroundColor:['rgba(77,190,142,0.65)','rgba(224,90,90,0.65)','rgba(90,154,224,0.55)','rgba(224,90,90,0.45)','rgba(123,196,247,0.65)','rgba(239,159,39,0.55)'],borderColor:['#4dbe8e','#e05a5a','#5a9ae0','#e05a5a','#7bc4f7','#ef9f27'],borderWidth:1,borderRadius:0,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'$'+v.toLocaleString()},grid:{color:'rgba(255,255,255,0.04)'}},x:{grid:{display:false},ticks:{font:{size:12}}}}}});}
+
 function updHist(){
   const tb=document.getElementById('hbody');if(!tb)return;
   const ks=Object.keys(data).sort();let cum=0;const rows=[];
   for(const k of ks){const d=data[k];const pI=d['p-income'].reduce((a,r)=>a+r.actual,0),pE=d['p-expense'].reduce((a,r)=>a+r.actual,0);const sI=d['s-income'].reduce((a,r)=>a+r.actual,0),sE=d['s-expense'].reduce((a,r)=>a+r.actual,0);const svN=d['savings'].reduce((a,r)=>a+(r.budget-r.actual),0);const net=(pI-pE)+(sI-sE)+svN;cum+=net;rows.push({k,pI,pE,sI,sE,svN,net,cum});}
   tb.innerHTML=rows.map(r=>`<tr><td class="mo">${r.k}</td><td class="mono pos">${fmt(r.pI)}</td><td class="mono neg">${fmt(r.pE)}</td><td class="mono" style="color:var(--blue)">${fmt(r.sI)}</td><td class="mono neg">${fmt(r.sE)}</td><td class="mono sav">${fmt(r.svN)}</td><td class="mono ${r.net>=0?'pos':'neg'}">${fmt(r.net)}</td><td class="mono bold">${fmt(r.cum)}</td></tr>`).join('');
-  updHChart(rows);
+
+  // 累計折線圖
+  const ctx=document.getElementById('chartH');
+  if(ctx){
+    if(charts['chartH'])charts['chartH'].destroy();
+    if(rows.length){
+      charts['chartH']=new Chart(ctx,{type:'line',data:{labels:rows.map(r=>r.k),datasets:[{label:'累計資產',data:rows.map(r=>r.cum),borderColor:'#c9a84c',backgroundColor:'rgba(201,168,76,0.08)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:'#c9a84c'},{label:'月結餘',data:rows.map(r=>r.net),borderColor:'#4dbe8e',backgroundColor:'transparent',tension:.3,borderDash:[4,3],pointRadius:3,pointBackgroundColor:'#4dbe8e'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'$'+v.toLocaleString()},grid:{color:'rgba(255,255,255,0.04)'}},x:{grid:{display:false},ticks:{autoSkip:false,maxRotation:45}}}}});
+    }
+  }
+
+  // 各月支出圓餅（最新一個月）
+  if(rows.length){
+    const last=rows[rows.length-1];
+    const lastD=data[last.k];
+    const expR=lastD['p-expense'];
+    makePie('chartHPie','legendHPie',expR.map(r=>r.name),expR.map(r=>r.actual),PIE_COLORS);
+  }
 }
-function updHChart(rows){const ctx=document.getElementById('chartH');if(!ctx||!rows.length)return;if(cH)cH.destroy();cH=new Chart(ctx,{type:'line',data:{labels:rows.map(r=>r.k),datasets:[{label:'累計資產',data:rows.map(r=>r.cum),borderColor:'#c9a84c',backgroundColor:'rgba(201,168,76,0.07)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:'#c9a84c'},{label:'月結餘',data:rows.map(r=>r.net),borderColor:'#4dbe8e',backgroundColor:'transparent',tension:.3,borderDash:[4,3],pointRadius:3,pointBackgroundColor:'#4dbe8e'},{label:'淨存款',data:rows.map(r=>r.svN),borderColor:'#5a9ae0',backgroundColor:'transparent',tension:.3,borderDash:[2,4],pointRadius:3,pointBackgroundColor:'#5a9ae0'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'$'+v.toLocaleString()},grid:{color:'rgba(255,255,255,0.04)'}},x:{grid:{display:false},ticks:{autoSkip:false,maxRotation:45}}}}});}
+
 const PT={personal:'個人財務',studio:'工作室財務',savings:'存款管理',total:'總資產',history:'歷史記錄'};
 const PS={personal:'PERSONAL FINANCE',studio:'STUDIO FINANCE',savings:'SAVINGS & GOALS',total:'TOTAL ASSETS',history:'MONTHLY HISTORY'};
 function sw(name,el){
